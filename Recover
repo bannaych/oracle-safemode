@@ -1,0 +1,55 @@
+#!/bin/bash
+#
+#
+
+FA_USER=oracle
+FA_IP=10.226.224.112
+
+
+umount()
+{
+        sudo umount /FRA
+}
+
+mount()
+{
+        sudo mount /dev/fra1dg/lvol0 /FRA
+}
+
+clear
+echo ""
+echo "About to umount the /FRA filesystem..."
+umount
+sleep 2
+
+ssh $FA_USER@$FA_IP "purevol list --snap ora21cfra1"|awk -F " " '{print $3 " " $1}' > oravolsnap.list
+gum filter < oravolsnap.list > list.txt
+
+source=`awk '{print $1}' < list.txt`
+snap=`awk '{print $2}' < list.txt`
+
+echo ""
+gum style \
+        --foreground 212 --border-foreground 212 --border double \
+        --align center --width 100 --margin "1 2" --padding "2 4" \
+         "ABOUT TO OVERWRITE -- $snap TO $source " 
+echo ""
+echo -n "Pres enter to continue.."
+read ans
+
+#ssh oracle@10.226.224.112 "purevol copy --overwrite "$snap" "$source""
+
+
+echo ""
+echo "Mounting the /FRA filesystem"
+mount
+sleep 2
+
+clear
+
+gum style \
+        --foreground 212 --border-foreground 212 --border double \
+        --align center --width 100 --margin "1 2" --padding "2 4" \
+         "Connec to the DB as RMAN and run the following command to check the backup "\
+         "list backup - you should see no backups, now run the following command for RMAN"\
+         " catalog start with /'FRA'; to detext the backups from the restored Snapshot"\

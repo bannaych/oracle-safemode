@@ -1,0 +1,34 @@
+FA_USER=oracle
+FA_IP=10.226.224.112
+FA_GROUP=cb-ora-safe-fra1
+FA_GROUP1=cbora21c
+
+rman target sys/Password123@//localhost/orcl.localdomain \
+nocatalog \
+@/home/oracle/backup1.rman
+
+
+GIT_COLOR="#f14e32"
+
+git_color_text () {
+    gum style --foreground "$GIT_COLOR" "$1"
+  }
+  gum style \
+      --border double \
+        --margin "1" \
+          --padding "2" \
+            --border-foreground "$GIT_COLOR" \
+              "$(git_color_text '') Taking a Snapshot of the Oracle FRA Volume"
+
+ sleep 2
+
+#FA_C_SNAP_SUFFIX=${FA_C_SNAP_SUFFIX}`date +%y%m%d%H%M%S`
+FA_SNAP_SUFFIX=RMAN`date +%y%m%d%H%M%S`
+FA_SNAP_SUFFIX1=RMAN`date +%y%m%d%H%M%S`
+ssh ${FA_USER}@${FA_IP} "purepgroup snap --suffix ${FA_SNAP_SUFFIX} ${FA_GROUP}" | tee -a ${LOG}
+ssh ${FA_USER}@${FA_IP} "purepgroup snap --suffix ${FA_SNAP_SUFFIX1} ${FA_GROUP1}" | tee -a ${LOG}
+GIT_COLOR="#f14e32"
+
+ssh ${FA_USER}@${FA_IP} "purepgroup list cb-ora-safe-fra1 --retention --pending --snap" >  safe.list
+
+gum pager < safe.list

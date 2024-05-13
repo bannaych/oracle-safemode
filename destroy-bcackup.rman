@@ -1,0 +1,10 @@
+sql 'alter system set db_recovery_file_dest="/FRA" scope=both';
+RUN
+{
+delete noprompt expired datafilecopy all;
+delete noprompt expired archivelog all;
+delete noprompt backup;
+delete noprompt datafilecopy all;
+delete force noprompt archivelog all;
+}
+EXIT

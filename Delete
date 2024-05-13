@@ -1,0 +1,7 @@
+FA_USER=pureuser
+FA_IP=10.226.224.112
+FA_GROUP=cbora21c
+
+rman target sys/Password123@//localhost/orcl.localdomain \
+nocatalog \
+@/home/oracle/destroy-backup.rman

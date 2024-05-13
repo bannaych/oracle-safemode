@@ -1,0 +1,9 @@
+sql 'alter system set db_recovery_file_dest="/FRA" scope=both';
+RUN
+{
+crosscheck backup;
+crosscheck datafilecopy all;
+crosscheck archivelog all;
+BACKUP DATABASE INCLUDE CURRENT CONTROLFILE;
+}
+EXIT
